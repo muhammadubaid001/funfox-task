@@ -39,7 +39,7 @@ export const AddTask: FC<IProps> = ({ tasks, setTasks}) => {
     }
 
     return (
-        <div className="hidden md:block h-screen w-96 bg-white shadow-md">
+        <div className=" md:block md:h-screen w-full md:w-96 bg-transparent md:bg-white shadow-md">
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-3 p-4">
                     <div className={styles.inputContainer}>

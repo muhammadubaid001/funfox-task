@@ -46,7 +46,7 @@ function App() {
             </Routes>
         ) : (
             <div className="w-full min-h-screen bg-gray-100">
-                <div className="h-screen flex overflow-hidden">
+                <div className="h-screen flex flex-col md:flex-row overflow-hidden">
                     <AddTask tasks={tasks} setTasks={setTasks}/>
                     <Tasks tasks={tasks} setTasks={setTasks}/>
                 </div>
