@@ -17,13 +17,17 @@ app.get('/tasks', (req, res) => {
   res.send(data)
 })
 
+app.post('/add-task', (req, res) => {
+  console.log({ req, res })
+  res.send(req.data)
+})
+
 io.on("connection", (socket) => {
   socket.on("new-task", (data) => {
     const { group, email } = data;
+    socket.emit('task-added', data)
 
-    socket.emit('new-task-added', { group: +group })
-
-    socket.to(group).emit('task-added', data)
+    socket.broadcast.emit('task-added', data)
   });
 
 });

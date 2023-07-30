@@ -22,7 +22,9 @@ function App() {
         const user = localStorage.getItem("user")
 
         axios.get('http://localhost:5000/tasks').then(resp => {
-            const groupTasks = resp.data.filter((item: { group: number }) => item.group === +JSON.parse(user as string).group)
+            const groupTasks = resp.data.filter((item: {
+                group: number
+            }) => item.group === +JSON.parse(user as string).group)
             setTasks(groupTasks)
         }).catch(error => {
             console.log(error)
@@ -41,17 +43,17 @@ function App() {
     }, [])
 
     return !isLoggedIn ? (
-            <Routes>
-                <Route path="*" element={<Login/>}/>
-            </Routes>
-        ) : (
-            <div className="w-full min-h-screen bg-gray-100">
-                <div className="h-screen flex flex-col md:flex-row overflow-hidden">
-                    <AddTask tasks={tasks} setTasks={setTasks}/>
-                    <Tasks tasks={tasks} setTasks={setTasks}/>
-                </div>
+        <Routes>
+            <Route path="*" element={<Login/>}/>
+        </Routes>
+    ) : (
+        <div className="w-full min-h-screen bg-gray-100">
+            <div className="h-screen flex flex-col md:flex-row overflow-hidden">
+                <AddTask tasks={tasks} setTasks={setTasks}/>
+                <Tasks tasks={tasks} setTasks={setTasks}/>
             </div>
-        );
+        </div>
+    );
 }
 
 export default App;

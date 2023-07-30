@@ -13,15 +13,14 @@ export const Tasks: FC<IProps> = ({tasks, setTasks}) => {
 
     const socket = useSocket()
 
-    const handleTaskAdded = useCallback(() => {
-        sweetAlert('New task added')
+    const handleTaskAdded = useCallback((data: any) => {
+        swal('Some added new task')
     }, [])
 
     useEffect(() => {
         socket.on("task-added", handleTaskAdded);
-
         return () => {
-            socket.on("task-added", handleTaskAdded);
+            socket.off("task-added", handleTaskAdded);
         };
     }, [handleTaskAdded, socket]);
 

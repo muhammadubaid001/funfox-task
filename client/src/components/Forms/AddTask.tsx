@@ -1,9 +1,11 @@
 import {ChangeEvent, FC, SyntheticEvent, useState} from "react";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {IProps} from "../Tasks";
 import {useSocket} from "../../utils/Socket";
+import axios from "axios";
+import swal from "sweetalert";
 
-export const AddTask: FC<IProps> = ({ tasks, setTasks}) => {
+export const AddTask: FC<IProps> = ({tasks, setTasks}) => {
     const [state, setState] = useState({
         title: '',
         description: ''
@@ -22,10 +24,11 @@ export const AddTask: FC<IProps> = ({ tasks, setTasks}) => {
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
 
-        if(!state.title || !state.description) return
+        if (!state.title || !state.description) return
 
         const temp = [...tasks]
-        temp.unshift({id: uuidv4(), completed: false, ...state })
+        const data = {id: uuidv4(), completed: false, ...state}
+        temp.unshift(data)
 
         setTasks(temp)
         setState({
@@ -34,8 +37,17 @@ export const AddTask: FC<IProps> = ({ tasks, setTasks}) => {
         })
 
         const user = JSON.parse(localStorage.getItem('user') as string)
+        socket.emit('new-task', {...data, group: user.group})
 
-        socket.emit('new-task', {...state, group: user.group })
+        axios.post('http://localhost:5000/add-task', data).then(resp => {
+            swal('Task added successfully')
+        }).catch(error => {
+            swal({
+                title: "Error",
+                text: "Something went wrong!",
+                dangerMode: true
+            })
+        })
     }
 
     return (
@@ -44,11 +56,13 @@ export const AddTask: FC<IProps> = ({ tasks, setTasks}) => {
                 <div className="flex flex-col gap-3 p-4">
                     <div className={styles.inputContainer}>
                         <label className={styles.label}>Title</label>
-                        <input type="text" className={styles.input} value={state.title} name="title" onChange={handleChange} placeholder="Enter title" required/>
+                        <input type="text" className={styles.input} value={state.title} name="title"
+                               onChange={handleChange} placeholder="Enter title" required/>
                     </div>
                     <div className={styles.inputContainer}>
                         <label className={styles.label}>Description</label>
-                        <input type="text" className={styles.input} value={state.description} name="description" onChange={handleChange} placeholder="Enter description" required/>
+                        <input type="text" className={styles.input} value={state.description} name="description"
+                               onChange={handleChange} placeholder="Enter description" required/>
                     </div>
                     <button className={styles.button}>Save</button>
                 </div>
